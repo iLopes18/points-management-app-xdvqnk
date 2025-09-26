@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { AppState, User, Category, Reward, HistoryEntry } from '../types';
+import { AppState, User, Category, Reward, HistoryEntry, Task } from '../types';
 import { initialData } from '../data/initialData';
 
 interface AppContextType {
@@ -10,7 +10,7 @@ interface AppContextType {
   history: HistoryEntry[];
   totalPoints: number;
   addPoints: (userId: string, points: number, taskName: string, categoryName: string) => void;
-  redeemReward: (userId: string, rewardId: string) => boolean;
+  redeemReward: (rewardId: string) => boolean; // Removed userId parameter
   resetPoints: () => void;
   
   // User management
@@ -22,7 +22,7 @@ interface AppContextType {
   deleteCategory: (categoryId: string) => void;
   
   // Task management
-  addTask: (categoryId: string, name: string, points: number) => void;
+  addTask: (categoryId: string, name: string, userPoints: { [userId: string]: number }) => void;
   updateTask: (taskId: string, updates: Partial<Task>) => void;
   deleteTask: (taskId: string) => void;
   moveTask: (taskId: string, newCategoryId: string) => void;
@@ -78,12 +78,11 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     }));
   };
 
-  const redeemReward = (userId: string, rewardId: string): boolean => {
-    const user = appState.users.find(u => u.id === userId);
+  const redeemReward = (rewardId: string): boolean => {
     const reward = appState.rewards.find(r => r.id === rewardId);
     
-    if (!user || !reward) {
-      console.log('User or reward not found');
+    if (!reward) {
+      console.log('Reward not found');
       return false;
     }
     
@@ -92,14 +91,15 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       return false;
     }
 
-    console.log(`Redeeming reward ${rewardId} for user ${userId}`);
+    console.log(`Redeeming reward ${rewardId} from combined points`);
 
+    // Create history entry for group reward redemption
     const historyEntry: HistoryEntry = {
-      id: `${Date.now()}-${userId}-${reward.name}`,
+      id: `${Date.now()}-group-${reward.name}`,
       type: 'reward',
-      userId,
-      userName: user.name,
-      userColor: user.color,
+      userId: 'group', // Special ID for group rewards
+      userName: 'Group Decision',
+      userColor: '#4CAF50', // Green for group decisions
       rewardName: reward.name,
       points: -reward.pointsRequired,
       timestamp: new Date(),
@@ -167,11 +167,11 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   };
 
   // Task management functions
-  const addTask = (categoryId: string, name: string, points: number) => {
+  const addTask = (categoryId: string, name: string, userPoints: { [userId: string]: number }) => {
     const newTask: Task = {
       id: `task_${Date.now()}`,
       name,
-      points,
+      userPoints,
       categoryId,
     };
     console.log('Adding new task:', newTask);

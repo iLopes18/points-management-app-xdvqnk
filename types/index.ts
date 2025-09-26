@@ -9,7 +9,7 @@ export interface User {
 export interface Task {
   id: string;
   name: string;
-  points: number;
+  userPoints: { [userId: string]: number }; // Different points for each user
   categoryId: string;
 }
 

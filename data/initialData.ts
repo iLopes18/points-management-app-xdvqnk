@@ -21,41 +21,126 @@ export const initialData: AppState = {
       id: 'household',
       name: 'Household Chores',
       tasks: [
-        { id: 'dishes', name: 'Do the Dishes', points: 10, categoryId: 'household' },
-        { id: 'laundry', name: 'Do Laundry', points: 15, categoryId: 'household' },
-        { id: 'vacuum', name: 'Vacuum Living Room', points: 12, categoryId: 'household' },
-        { id: 'bathroom', name: 'Clean Bathroom', points: 20, categoryId: 'household' },
-        { id: 'kitchen', name: 'Clean Kitchen', points: 18, categoryId: 'household' },
+        { 
+          id: 'dishes', 
+          name: 'Do the Dishes', 
+          userPoints: { 'lara': 10, 'isaac': 8 }, 
+          categoryId: 'household' 
+        },
+        { 
+          id: 'laundry', 
+          name: 'Do Laundry', 
+          userPoints: { 'lara': 15, 'isaac': 12 }, 
+          categoryId: 'household' 
+        },
+        { 
+          id: 'vacuum', 
+          name: 'Vacuum Living Room', 
+          userPoints: { 'lara': 12, 'isaac': 15 }, 
+          categoryId: 'household' 
+        },
+        { 
+          id: 'bathroom', 
+          name: 'Clean Bathroom', 
+          userPoints: { 'lara': 20, 'isaac': 18 }, 
+          categoryId: 'household' 
+        },
+        { 
+          id: 'kitchen', 
+          name: 'Clean Kitchen', 
+          userPoints: { 'lara': 18, 'isaac': 20 }, 
+          categoryId: 'household' 
+        },
       ],
     },
     {
       id: 'personal',
       name: 'Personal Goals',
       tasks: [
-        { id: 'exercise', name: 'Exercise 30 mins', points: 25, categoryId: 'personal' },
-        { id: 'reading', name: 'Read for 1 hour', points: 20, categoryId: 'personal' },
-        { id: 'meditation', name: 'Meditate 15 mins', points: 15, categoryId: 'personal' },
-        { id: 'water', name: 'Drink 8 glasses of water', points: 10, categoryId: 'personal' },
+        { 
+          id: 'exercise', 
+          name: 'Exercise 30 mins', 
+          userPoints: { 'lara': 25, 'isaac': 30 }, 
+          categoryId: 'personal' 
+        },
+        { 
+          id: 'reading', 
+          name: 'Read for 1 hour', 
+          userPoints: { 'lara': 20, 'isaac': 15 }, 
+          categoryId: 'personal' 
+        },
+        { 
+          id: 'meditation', 
+          name: 'Meditate 15 mins', 
+          userPoints: { 'lara': 15, 'isaac': 12 }, 
+          categoryId: 'personal' 
+        },
+        { 
+          id: 'water', 
+          name: 'Drink 8 glasses of water', 
+          userPoints: { 'lara': 10, 'isaac': 10 }, 
+          categoryId: 'personal' 
+        },
       ],
     },
     {
       id: 'work',
       name: 'Work & Study',
       tasks: [
-        { id: 'project', name: 'Complete Work Project', points: 50, categoryId: 'work' },
-        { id: 'study', name: 'Study for 2 hours', points: 30, categoryId: 'work' },
-        { id: 'organize', name: 'Organize Workspace', points: 15, categoryId: 'work' },
-        { id: 'emails', name: 'Clear Email Inbox', points: 10, categoryId: 'work' },
+        { 
+          id: 'project', 
+          name: 'Complete Work Project', 
+          userPoints: { 'lara': 50, 'isaac': 45 }, 
+          categoryId: 'work' 
+        },
+        { 
+          id: 'study', 
+          name: 'Study for 2 hours', 
+          userPoints: { 'lara': 30, 'isaac': 35 }, 
+          categoryId: 'work' 
+        },
+        { 
+          id: 'organize', 
+          name: 'Organize Workspace', 
+          userPoints: { 'lara': 15, 'isaac': 12 }, 
+          categoryId: 'work' 
+        },
+        { 
+          id: 'emails', 
+          name: 'Clear Email Inbox', 
+          userPoints: { 'lara': 10, 'isaac': 8 }, 
+          categoryId: 'work' 
+        },
       ],
     },
     {
       id: 'social',
       name: 'Social & Family',
       tasks: [
-        { id: 'call-family', name: 'Call Family Member', points: 15, categoryId: 'social' },
-        { id: 'friend-time', name: 'Spend Time with Friends', points: 20, categoryId: 'social' },
-        { id: 'date-night', name: 'Plan Date Night', points: 25, categoryId: 'social' },
-        { id: 'help-neighbor', name: 'Help a Neighbor', points: 30, categoryId: 'social' },
+        { 
+          id: 'call-family', 
+          name: 'Call Family Member', 
+          userPoints: { 'lara': 15, 'isaac': 18 }, 
+          categoryId: 'social' 
+        },
+        { 
+          id: 'friend-time', 
+          name: 'Spend Time with Friends', 
+          userPoints: { 'lara': 20, 'isaac': 22 }, 
+          categoryId: 'social' 
+        },
+        { 
+          id: 'date-night', 
+          name: 'Plan Date Night', 
+          userPoints: { 'lara': 25, 'isaac': 25 }, 
+          categoryId: 'social' 
+        },
+        { 
+          id: 'help-neighbor', 
+          name: 'Help a Neighbor', 
+          userPoints: { 'lara': 30, 'isaac': 28 }, 
+          categoryId: 'social' 
+        },
       ],
     },
   ],

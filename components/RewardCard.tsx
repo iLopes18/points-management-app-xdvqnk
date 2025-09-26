@@ -10,11 +10,11 @@ interface RewardCardProps {
 }
 
 const RewardCard: React.FC<RewardCardProps> = ({ reward }) => {
-  const { totalPoints, redeemReward, users } = useAppContext();
+  const { totalPoints, redeemReward } = useAppContext();
   const [scaleAnim] = useState(new Animated.Value(1));
 
-  const handleRedeem = (userId: string, userName: string) => {
-    console.log(`Attempting to redeem reward: ${reward.name} for user: ${userName}`);
+  const handleRedeem = () => {
+    console.log(`Attempting to redeem reward: ${reward.name} with combined points`);
     
     if (totalPoints < reward.pointsRequired) {
       Alert.alert(
@@ -27,7 +27,7 @@ const RewardCard: React.FC<RewardCardProps> = ({ reward }) => {
 
     Alert.alert(
       'Redeem Reward',
-      `${userName} wants to redeem "${reward.name}" for ${reward.pointsRequired} points?`,
+      `Redeem "${reward.name}" for ${reward.pointsRequired} points from your combined total?`,
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -47,11 +47,11 @@ const RewardCard: React.FC<RewardCardProps> = ({ reward }) => {
               }),
             ]).start();
 
-            const success = redeemReward(userId, reward.id);
+            const success = redeemReward(reward.id);
             if (success) {
               Alert.alert(
                 'Reward Redeemed!',
-                `${userName} successfully redeemed "${reward.name}"`,
+                `Successfully redeemed "${reward.name}" as a group decision!`,
                 [{ text: 'Enjoy!' }]
               );
             }
@@ -75,38 +75,31 @@ const RewardCard: React.FC<RewardCardProps> = ({ reward }) => {
         {reward.pointsRequired} points
       </Text>
       
-      <View style={commonStyles.buttonRow}>
-        {users.map((user) => (
-          <TouchableOpacity
-            key={user.id}
-            style={[
-              {
-                backgroundColor: canAfford ? user.color : colors.grey,
-                paddingHorizontal: 20,
-                paddingVertical: 14,
-                borderRadius: 10,
-                alignItems: 'center',
-                justifyContent: 'center',
-                flex: 1,
-                marginHorizontal: 4,
-                boxShadow: `0px 2px 6px ${colors.shadow}`,
-                elevation: 2,
-                opacity: canAfford ? 1 : 0.6,
-              }
-            ]}
-            onPress={() => handleRedeem(user.id, user.name)}
-            disabled={!canAfford}
-          >
-            <Text style={{ 
-              color: colors.backgroundAlt, 
-              fontSize: 16, 
-              fontWeight: '600' 
-            }}>
-              {user.name}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <TouchableOpacity
+        style={[
+          {
+            backgroundColor: canAfford ? '#4CAF50' : colors.grey,
+            paddingHorizontal: 20,
+            paddingVertical: 16,
+            borderRadius: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: `0px 2px 6px ${colors.shadow}`,
+            elevation: 2,
+            opacity: canAfford ? 1 : 0.6,
+          }
+        ]}
+        onPress={handleRedeem}
+        disabled={!canAfford}
+      >
+        <Text style={{ 
+          color: colors.backgroundAlt, 
+          fontSize: 18, 
+          fontWeight: '600' 
+        }}>
+          Redeem
+        </Text>
+      </TouchableOpacity>
     </Animated.View>
   );
 };

@@ -20,6 +20,7 @@ const CategorySettingsBottomSheet: React.FC<CategorySettingsBottomSheetProps> = 
 }) => {
   const { 
     categories, 
+    users,
     addCategory, 
     updateCategory, 
     deleteCategory,
@@ -32,7 +33,7 @@ const CategorySettingsBottomSheet: React.FC<CategorySettingsBottomSheetProps> = 
   const [editMode, setEditMode] = useState<EditMode>('none');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [tempName, setTempName] = useState('');
-  const [tempPoints, setTempPoints] = useState('');
+  const [tempUserPoints, setTempUserPoints] = useState<{ [userId: string]: string }>({});
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
 
   const startAddCategory = () => {
@@ -44,7 +45,12 @@ const CategorySettingsBottomSheet: React.FC<CategorySettingsBottomSheetProps> = 
     setEditMode('add-task');
     setSelectedCategoryId(categoryId);
     setTempName('');
-    setTempPoints('10');
+    // Initialize with default points for each user
+    const defaultPoints: { [userId: string]: string } = {};
+    users.forEach(user => {
+      defaultPoints[user.id] = '10';
+    });
+    setTempUserPoints(defaultPoints);
   };
 
   const startEditCategory = (category: Category) => {
@@ -57,7 +63,12 @@ const CategorySettingsBottomSheet: React.FC<CategorySettingsBottomSheetProps> = 
     setEditMode('task');
     setEditingId(task.id);
     setTempName(task.name);
-    setTempPoints(task.points.toString());
+    // Convert user points to string format for editing
+    const userPointsStr: { [userId: string]: string } = {};
+    users.forEach(user => {
+      userPointsStr[user.id] = (task.userPoints[user.id] || 0).toString();
+    });
+    setTempUserPoints(userPointsStr);
     setSelectedCategoryId(task.categoryId);
   };
 
@@ -84,19 +95,30 @@ const CategorySettingsBottomSheet: React.FC<CategorySettingsBottomSheetProps> = 
       return;
     }
 
-    const points = parseInt(tempPoints);
-    if (isNaN(points) || points <= 0) {
-      Alert.alert('Error', 'Please enter a valid number of points');
-      return;
+    // Validate and convert user points
+    const userPoints: { [userId: string]: number } = {};
+    let hasError = false;
+
+    for (const user of users) {
+      const pointsStr = tempUserPoints[user.id] || '0';
+      const points = parseInt(pointsStr);
+      if (isNaN(points) || points < 0) {
+        Alert.alert('Error', `Please enter valid points for ${user.name}`);
+        hasError = true;
+        break;
+      }
+      userPoints[user.id] = points;
     }
 
+    if (hasError) return;
+
     if (editMode === 'add-task') {
-      addTask(selectedCategoryId, tempName.trim(), points);
+      addTask(selectedCategoryId, tempName.trim(), userPoints);
       Alert.alert('Success', 'Task added successfully');
     } else if (editMode === 'task' && editingId) {
       updateTask(editingId, { 
         name: tempName.trim(), 
-        points,
+        userPoints,
         categoryId: selectedCategoryId,
       });
       Alert.alert('Success', 'Task updated successfully');
@@ -159,8 +181,15 @@ const CategorySettingsBottomSheet: React.FC<CategorySettingsBottomSheetProps> = 
     setEditMode('none');
     setEditingId(null);
     setTempName('');
-    setTempPoints('');
+    setTempUserPoints({});
     setSelectedCategoryId('');
+  };
+
+  const updateUserPoints = (userId: string, points: string) => {
+    setTempUserPoints(prev => ({
+      ...prev,
+      [userId]: points
+    }));
   };
 
   const renderEditForm = () => {
@@ -196,26 +225,32 @@ const CategorySettingsBottomSheet: React.FC<CategorySettingsBottomSheetProps> = 
         
         {isTaskMode && (
           <>
-            <Text style={[commonStyles.text, { marginBottom: 8 }]}>Points:</Text>
-            <TextInput
-              style={{
-                borderWidth: 1,
-                borderColor: colors.grey,
-                borderRadius: 8,
-                padding: 12,
-                fontSize: 16,
-                marginBottom: 16,
-                backgroundColor: colors.backgroundAlt,
-              }}
-              value={tempPoints}
-              onChangeText={setTempPoints}
-              placeholder="Enter points"
-              keyboardType="numeric"
-            />
+            <Text style={[commonStyles.text, { marginBottom: 12 }]}>Points for each user:</Text>
+            {users.map((user) => (
+              <View key={user.id} style={{ marginBottom: 12 }}>
+                <Text style={[commonStyles.text, { marginBottom: 4, color: user.color, fontWeight: '600' }]}>
+                  {user.name}:
+                </Text>
+                <TextInput
+                  style={{
+                    borderWidth: 1,
+                    borderColor: colors.grey,
+                    borderRadius: 8,
+                    padding: 12,
+                    fontSize: 16,
+                    backgroundColor: colors.backgroundAlt,
+                  }}
+                  value={tempUserPoints[user.id] || ''}
+                  onChangeText={(text) => updateUserPoints(user.id, text)}
+                  placeholder="Enter points"
+                  keyboardType="numeric"
+                />
+              </View>
+            ))}
             
             {editMode === 'task' && (
               <>
-                <Text style={[commonStyles.text, { marginBottom: 8 }]}>Category:</Text>
+                <Text style={[commonStyles.text, { marginBottom: 8, marginTop: 8 }]}>Category:</Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 16 }}>
                   <View style={{ flexDirection: 'row', gap: 8 }}>
                     {categories.map((category) => (
@@ -324,12 +359,16 @@ const CategorySettingsBottomSheet: React.FC<CategorySettingsBottomSheetProps> = 
                   marginBottom: 8,
                 }}>
                   <View style={{ flex: 1 }}>
-                    <Text style={[commonStyles.text, { marginBottom: 2 }]}>
+                    <Text style={[commonStyles.text, { marginBottom: 4 }]}>
                       {task.name}
                     </Text>
-                    <Text style={commonStyles.textSecondary}>
-                      {task.points} points
-                    </Text>
+                    <View style={{ flexDirection: 'row', gap: 8 }}>
+                      {users.map((user) => (
+                        <Text key={user.id} style={[commonStyles.textSecondary, { color: user.color }]}>
+                          {user.name}: {task.userPoints[user.id] || 0}
+                        </Text>
+                      ))}
+                    </View>
                   </View>
                   <TouchableOpacity
                     style={{ padding: 8, marginRight: 4 }}
