@@ -206,9 +206,68 @@ export const commonStyles = StyleSheet.create({
     fontSize: 32,
     fontWeight: '800',
   },
+  totalPointsContainer: {
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  totalPointsLabel: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: 4,
+  },
+  totalPointsValue: {
+    fontSize: 48,
+    fontWeight: '800',
+    color: colors.primary,
+  },
   buttonRow: {
     flexDirection: 'row',
     marginTop: 16,
     gap: 8,
+  },
+  historyCard: {
+    backgroundColor: colors.card,
+    borderRadius: 12,
+    padding: 16,
+    marginVertical: 6,
+    marginHorizontal: 16,
+    boxShadow: `0px 2px 8px ${colors.shadow}`,
+    elevation: 2,
+  },
+  historyHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  historyTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.text,
+    flex: 1,
+  },
+  historyPoints: {
+    fontSize: 16,
+    fontWeight: '700',
+    marginLeft: 8,
+  },
+  historyMeta: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  historyUser: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  historyTime: {
+    fontSize: 12,
+    color: colors.textSecondary,
+  },
+  historyCategory: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    fontStyle: 'italic',
   },
 });

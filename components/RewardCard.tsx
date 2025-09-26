@@ -2,48 +2,47 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Alert, Animated } from 'react-native';
 import { commonStyles, colors, buttonStyles } from '../styles/commonStyles';
-import { Reward } from '../types';
 import { useAppContext } from '../context/AppContext';
+import { Reward } from '../types';
 
 interface RewardCardProps {
   reward: Reward;
 }
 
 const RewardCard: React.FC<RewardCardProps> = ({ reward }) => {
-  const { users, redeemReward } = useAppContext();
-  const [redeemAnimation] = useState(new Animated.Value(1));
+  const { totalPoints, redeemReward } = useAppContext();
+  const [scaleAnim] = useState(new Animated.Value(1));
 
   const handleRedeem = (userId: string, userName: string) => {
-    const user = users.find(u => u.id === userId);
-    if (!user) return;
-
-    if (user.points < reward.pointsRequired) {
+    console.log(`Attempting to redeem reward: ${reward.name} for user: ${userName}`);
+    
+    if (totalPoints < reward.pointsRequired) {
       Alert.alert(
-        '❌ Insufficient Points',
-        `${userName} needs ${reward.pointsRequired - user.points} more points to redeem this reward.`,
-        [{ text: 'Keep earning!' }]
+        'Insufficient Points',
+        `You need ${reward.pointsRequired} points but only have ${totalPoints} points.`,
+        [{ text: 'OK' }]
       );
       return;
     }
 
     Alert.alert(
-      '🎁 Redeem Reward',
+      'Redeem Reward',
       `${userName} wants to redeem "${reward.name}" for ${reward.pointsRequired} points?`,
       [
         { text: 'Cancel', style: 'cancel' },
         {
           text: 'Redeem',
           onPress: () => {
-            // Animate the card
+            // Animation feedback
             Animated.sequence([
-              Animated.timing(redeemAnimation, {
+              Animated.timing(scaleAnim, {
                 toValue: 0.95,
-                duration: 150,
+                duration: 100,
                 useNativeDriver: true,
               }),
-              Animated.timing(redeemAnimation, {
+              Animated.timing(scaleAnim, {
                 toValue: 1,
-                duration: 150,
+                duration: 100,
                 useNativeDriver: true,
               }),
             ]).start();
@@ -51,9 +50,9 @@ const RewardCard: React.FC<RewardCardProps> = ({ reward }) => {
             const success = redeemReward(userId, reward.id);
             if (success) {
               Alert.alert(
-                '🎉 Reward Redeemed!',
-                `${userName} successfully redeemed "${reward.name}"!`,
-                [{ text: 'Enjoy! 🎊' }]
+                'Reward Redeemed!',
+                `${userName} successfully redeemed "${reward.name}"`,
+                [{ text: 'Enjoy!' }]
               );
             }
           },
@@ -62,47 +61,54 @@ const RewardCard: React.FC<RewardCardProps> = ({ reward }) => {
     );
   };
 
+  const canAfford = totalPoints >= reward.pointsRequired;
+
   return (
-    <Animated.View style={{ transform: [{ scale: redeemAnimation }] }}>
-      <View style={commonStyles.card}>
-        <Text style={[commonStyles.subtitle, { marginBottom: 8 }]}>
-          {reward.name}
+    <Animated.View style={[commonStyles.card, { transform: [{ scale: scaleAnim }] }]}>
+      <Text style={commonStyles.subtitle}>{reward.name}</Text>
+      {reward.description && (
+        <Text style={[commonStyles.textSecondary, { marginBottom: 8 }]}>
+          {reward.description}
         </Text>
-        {reward.description && (
-          <Text style={[commonStyles.textSecondary, { marginBottom: 12 }]}>
-            {reward.description}
+      )}
+      <Text style={[commonStyles.text, { marginBottom: 16, color: colors.primary }]}>
+        {reward.pointsRequired} points
+      </Text>
+      
+      <View style={commonStyles.buttonRow}>
+        <TouchableOpacity
+          style={[
+            buttonStyles.lara,
+            !canAfford && { backgroundColor: colors.grey, opacity: 0.6 }
+          ]}
+          onPress={() => handleRedeem('lara', 'Lara')}
+          disabled={!canAfford}
+        >
+          <Text style={{ 
+            color: colors.backgroundAlt, 
+            fontSize: 16, 
+            fontWeight: '600' 
+          }}>
+            Lara
           </Text>
-        )}
-        <Text style={[commonStyles.text, { marginBottom: 16, fontWeight: '600', color: colors.primary }]}>
-          {reward.pointsRequired} points required
-        </Text>
+        </TouchableOpacity>
         
-        <View style={commonStyles.buttonRow}>
-          {users.map(user => {
-            const canRedeem = user.points >= reward.pointsRequired;
-            const progress = Math.min((user.points / reward.pointsRequired) * 100, 100);
-            
-            return (
-              <TouchableOpacity
-                key={user.id}
-                style={[
-                  user.id === 'lara' ? buttonStyles.lara : buttonStyles.isaac,
-                  !canRedeem && { opacity: 0.6 }
-                ]}
-                onPress={() => handleRedeem(user.id, user.name)}
-                disabled={!canRedeem}
-                activeOpacity={0.8}
-              >
-                <Text style={[commonStyles.text, { color: colors.backgroundAlt, fontWeight: '600' }]}>
-                  {user.name}
-                </Text>
-                <Text style={[commonStyles.textSecondary, { color: colors.backgroundAlt, fontSize: 12 }]}>
-                  {user.points}/{reward.pointsRequired} ({Math.round(progress)}%)
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
+        <TouchableOpacity
+          style={[
+            buttonStyles.isaac,
+            !canAfford && { backgroundColor: colors.grey, opacity: 0.6 }
+          ]}
+          onPress={() => handleRedeem('isaac', 'Isaac')}
+          disabled={!canAfford}
+        >
+          <Text style={{ 
+            color: colors.backgroundAlt, 
+            fontSize: 16, 
+            fontWeight: '600' 
+          }}>
+            Isaac
+          </Text>
+        </TouchableOpacity>
       </View>
     </Animated.View>
   );

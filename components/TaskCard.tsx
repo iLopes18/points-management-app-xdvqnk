@@ -2,67 +2,74 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Alert, Animated } from 'react-native';
 import { commonStyles, colors, buttonStyles } from '../styles/commonStyles';
-import { Task } from '../types';
 import { useAppContext } from '../context/AppContext';
+import { Task } from '../types';
 
 interface TaskCardProps {
   task: Task;
 }
 
 const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
-  const { users, addPoints } = useAppContext();
-  const [completionAnimation] = useState(new Animated.Value(1));
+  const { addPoints, categories } = useAppContext();
+  const [scaleAnim] = useState(new Animated.Value(1));
+
+  const getCategoryName = (categoryId: string) => {
+    const category = categories.find(c => c.id === categoryId);
+    return category ? category.name : 'Unknown Category';
+  };
 
   const handleAddPoints = (userId: string, userName: string) => {
-    // Animate the card
+    console.log(`Adding points for task: ${task.name}, user: ${userName}`);
+    
+    // Animation feedback
     Animated.sequence([
-      Animated.timing(completionAnimation, {
-        toValue: 1.05,
-        duration: 150,
+      Animated.timing(scaleAnim, {
+        toValue: 0.95,
+        duration: 100,
         useNativeDriver: true,
       }),
-      Animated.timing(completionAnimation, {
+      Animated.timing(scaleAnim, {
         toValue: 1,
-        duration: 150,
+        duration: 100,
         useNativeDriver: true,
       }),
     ]).start();
 
-    addPoints(userId, task.points);
+    const categoryName = getCategoryName(task.categoryId);
+    addPoints(userId, task.points, task.name, categoryName);
+    
     Alert.alert(
-      '🎉 Points Added!',
+      'Points Added!',
       `${userName} earned ${task.points} points for "${task.name}"`,
-      [{ text: 'Awesome!' }]
+      [{ text: 'OK' }]
     );
   };
 
   return (
-    <Animated.View style={{ transform: [{ scale: completionAnimation }] }}>
-      <View style={[commonStyles.card, { marginVertical: 8, backgroundColor: colors.background }]}>
-        <Text style={[commonStyles.text, { marginBottom: 12, fontWeight: '600' }]}>
-          {task.name}
-        </Text>
-        <Text style={[commonStyles.textSecondary, { marginBottom: 16 }]}>
-          Worth {task.points} points
-        </Text>
+    <Animated.View style={[commonStyles.card, { transform: [{ scale: scaleAnim }] }]}>
+      <Text style={commonStyles.subtitle}>{task.name}</Text>
+      <Text style={[commonStyles.textSecondary, { marginBottom: 16 }]}>
+        {task.points} points
+      </Text>
+      
+      <View style={commonStyles.buttonRow}>
+        <TouchableOpacity
+          style={buttonStyles.lara}
+          onPress={() => handleAddPoints('lara', 'Lara')}
+        >
+          <Text style={{ color: colors.backgroundAlt, fontSize: 16, fontWeight: '600' }}>
+            Lara
+          </Text>
+        </TouchableOpacity>
         
-        <View style={commonStyles.buttonRow}>
-          {users.map(user => (
-            <TouchableOpacity
-              key={user.id}
-              style={user.id === 'lara' ? buttonStyles.lara : buttonStyles.isaac}
-              onPress={() => handleAddPoints(user.id, user.name)}
-              activeOpacity={0.8}
-            >
-              <Text style={[commonStyles.text, { color: colors.backgroundAlt, fontWeight: '600' }]}>
-                {user.name}
-              </Text>
-              <Text style={[commonStyles.textSecondary, { color: colors.backgroundAlt, fontSize: 12 }]}>
-                +{task.points} pts
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+        <TouchableOpacity
+          style={buttonStyles.isaac}
+          onPress={() => handleAddPoints('isaac', 'Isaac')}
+        >
+          <Text style={{ color: colors.backgroundAlt, fontSize: 16, fontWeight: '600' }}>
+            Isaac
+          </Text>
+        </TouchableOpacity>
       </View>
     </Animated.View>
   );

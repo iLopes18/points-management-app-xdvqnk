@@ -7,7 +7,7 @@ import Icon from './Icon';
 import SettingsBottomSheet from './SettingsBottomSheet';
 
 const Header: React.FC = () => {
-  const { users } = useAppContext();
+  const { totalPoints } = useAppContext();
   const [showSettings, setShowSettings] = useState(false);
 
   return (
@@ -28,16 +28,14 @@ const Header: React.FC = () => {
         </View>
         
         <View style={commonStyles.pointsContainer}>
-          {users.map(user => (
-            <View key={user.id} style={commonStyles.pointsItem}>
-              <Text style={[commonStyles.pointsLabel, { color: user.color }]}>
-                {user.name}
-              </Text>
-              <Text style={[commonStyles.pointsValue, { color: user.color }]}>
-                {user.points}
-              </Text>
-            </View>
-          ))}
+          <View style={commonStyles.pointsItem}>
+            <Text style={[commonStyles.pointsLabel, { color: colors.primary }]}>
+              Total Points
+            </Text>
+            <Text style={[commonStyles.pointsValue, { color: colors.primary }]}>
+              {totalPoints}
+            </Text>
+          </View>
         </View>
       </View>
       

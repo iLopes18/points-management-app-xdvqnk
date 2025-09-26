@@ -9,6 +9,7 @@ import Header from '../components/Header';
 import BottomTabs from '../components/BottomTabs';
 import CategoriesView from '../components/CategoriesView';
 import RewardsView from '../components/RewardsView';
+import HistoryView from '../components/HistoryView';
 
 export default function MainScreen() {
   const [activeTab, setActiveTab] = useState<TabType>('categories');
@@ -19,6 +20,8 @@ export default function MainScreen() {
         return <CategoriesView />;
       case 'rewards':
         return <RewardsView />;
+      case 'history':
+        return <HistoryView />;
       default:
         return <CategoriesView />;
     }

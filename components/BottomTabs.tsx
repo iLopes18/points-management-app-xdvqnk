@@ -22,13 +22,14 @@ const BottomTabs: React.FC<BottomTabsProps> = ({ activeTab, onTabChange }) => {
       >
         <Icon
           name="list"
-          size={24}
+          size={20}
           color={activeTab === 'categories' ? colors.backgroundAlt : colors.text}
         />
         <Text
           style={[
             commonStyles.tabText,
             activeTab === 'categories' && commonStyles.tabTextActive,
+            { fontSize: 12 }
           ]}
         >
           Categories
@@ -44,16 +45,40 @@ const BottomTabs: React.FC<BottomTabsProps> = ({ activeTab, onTabChange }) => {
       >
         <Icon
           name="gift"
-          size={24}
+          size={20}
           color={activeTab === 'rewards' ? colors.backgroundAlt : colors.text}
         />
         <Text
           style={[
             commonStyles.tabText,
             activeTab === 'rewards' && commonStyles.tabTextActive,
+            { fontSize: 12 }
           ]}
         >
           Rewards
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[
+          commonStyles.tabButton,
+          activeTab === 'history' && commonStyles.tabButtonActive,
+        ]}
+        onPress={() => onTabChange('history')}
+      >
+        <Icon
+          name="clock"
+          size={20}
+          color={activeTab === 'history' ? colors.backgroundAlt : colors.text}
+        />
+        <Text
+          style={[
+            commonStyles.tabText,
+            activeTab === 'history' && commonStyles.tabTextActive,
+            { fontSize: 12 }
+          ]}
+        >
+          History
         </Text>
       </TouchableOpacity>
     </View>

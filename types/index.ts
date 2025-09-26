@@ -26,10 +26,36 @@ export interface Reward {
   description?: string;
 }
 
+export interface TaskHistoryEntry {
+  id: string;
+  taskId: string;
+  taskName: string;
+  userId: string;
+  userName: string;
+  userColor: string;
+  points: number;
+  categoryName: string;
+  timestamp: Date;
+}
+
+export interface RewardHistoryEntry {
+  id: string;
+  rewardId: string;
+  rewardName: string;
+  userId: string;
+  userName: string;
+  userColor: string;
+  points: number;
+  timestamp: Date;
+}
+
 export interface AppState {
   users: User[];
   categories: Category[];
   rewards: Reward[];
+  totalPoints: number;
+  taskHistory: TaskHistoryEntry[];
+  rewardHistory: RewardHistoryEntry[];
 }
 
-export type TabType = 'categories' | 'rewards';
+export type TabType = 'categories' | 'rewards' | 'history';

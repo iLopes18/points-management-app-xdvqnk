@@ -97,4 +97,6 @@ export const initialData: AppState = {
       description: 'Plan a weekend trip',
     },
   ],
+  history: [],
+  totalPoints: 0,
 };
