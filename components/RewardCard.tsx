@@ -10,7 +10,7 @@ interface RewardCardProps {
 }
 
 const RewardCard: React.FC<RewardCardProps> = ({ reward }) => {
-  const { totalPoints, redeemReward } = useAppContext();
+  const { totalPoints, redeemReward, users } = useAppContext();
   const [scaleAnim] = useState(new Animated.Value(1));
 
   const handleRedeem = (userId: string, userName: string) => {
@@ -76,39 +76,36 @@ const RewardCard: React.FC<RewardCardProps> = ({ reward }) => {
       </Text>
       
       <View style={commonStyles.buttonRow}>
-        <TouchableOpacity
-          style={[
-            buttonStyles.lara,
-            !canAfford && { backgroundColor: colors.grey, opacity: 0.6 }
-          ]}
-          onPress={() => handleRedeem('lara', 'Lara')}
-          disabled={!canAfford}
-        >
-          <Text style={{ 
-            color: colors.backgroundAlt, 
-            fontSize: 16, 
-            fontWeight: '600' 
-          }}>
-            Lara
-          </Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity
-          style={[
-            buttonStyles.isaac,
-            !canAfford && { backgroundColor: colors.grey, opacity: 0.6 }
-          ]}
-          onPress={() => handleRedeem('isaac', 'Isaac')}
-          disabled={!canAfford}
-        >
-          <Text style={{ 
-            color: colors.backgroundAlt, 
-            fontSize: 16, 
-            fontWeight: '600' 
-          }}>
-            Isaac
-          </Text>
-        </TouchableOpacity>
+        {users.map((user) => (
+          <TouchableOpacity
+            key={user.id}
+            style={[
+              {
+                backgroundColor: canAfford ? user.color : colors.grey,
+                paddingHorizontal: 20,
+                paddingVertical: 14,
+                borderRadius: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
+                flex: 1,
+                marginHorizontal: 4,
+                boxShadow: `0px 2px 6px ${colors.shadow}`,
+                elevation: 2,
+                opacity: canAfford ? 1 : 0.6,
+              }
+            ]}
+            onPress={() => handleRedeem(user.id, user.name)}
+            disabled={!canAfford}
+          >
+            <Text style={{ 
+              color: colors.backgroundAlt, 
+              fontSize: 16, 
+              fontWeight: '600' 
+            }}>
+              {user.name}
+            </Text>
+          </TouchableOpacity>
+        ))}
       </View>
     </Animated.View>
   );

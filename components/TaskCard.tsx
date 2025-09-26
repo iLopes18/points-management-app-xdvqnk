@@ -10,7 +10,7 @@ interface TaskCardProps {
 }
 
 const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
-  const { addPoints, categories } = useAppContext();
+  const { addPoints, categories, users } = useAppContext();
   const [scaleAnim] = useState(new Animated.Value(1));
 
   const getCategoryName = (categoryId: string) => {
@@ -53,23 +53,30 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
       </Text>
       
       <View style={commonStyles.buttonRow}>
-        <TouchableOpacity
-          style={buttonStyles.lara}
-          onPress={() => handleAddPoints('lara', 'Lara')}
-        >
-          <Text style={{ color: colors.backgroundAlt, fontSize: 16, fontWeight: '600' }}>
-            Lara
-          </Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity
-          style={buttonStyles.isaac}
-          onPress={() => handleAddPoints('isaac', 'Isaac')}
-        >
-          <Text style={{ color: colors.backgroundAlt, fontSize: 16, fontWeight: '600' }}>
-            Isaac
-          </Text>
-        </TouchableOpacity>
+        {users.map((user) => (
+          <TouchableOpacity
+            key={user.id}
+            style={[
+              {
+                backgroundColor: user.color,
+                paddingHorizontal: 20,
+                paddingVertical: 14,
+                borderRadius: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
+                flex: 1,
+                marginHorizontal: 4,
+                boxShadow: `0px 2px 6px ${colors.shadow}`,
+                elevation: 2,
+              }
+            ]}
+            onPress={() => handleAddPoints(user.id, user.name)}
+          >
+            <Text style={{ color: colors.backgroundAlt, fontSize: 16, fontWeight: '600' }}>
+              {user.name}
+            </Text>
+          </TouchableOpacity>
+        ))}
       </View>
     </Animated.View>
   );

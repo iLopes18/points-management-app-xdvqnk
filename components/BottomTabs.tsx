@@ -11,76 +11,40 @@ interface BottomTabsProps {
 }
 
 const BottomTabs: React.FC<BottomTabsProps> = ({ activeTab, onTabChange }) => {
+  const tabs = [
+    { id: 'categories', icon: 'list-outline', label: 'Categories' },
+    { id: 'rewards', icon: 'gift-outline', label: 'Rewards' },
+    { id: 'history', icon: 'time-outline', label: 'History' },
+    { id: 'settings', icon: 'settings-outline', label: 'Settings' },
+  ];
+
   return (
     <View style={commonStyles.bottomTabs}>
-      <TouchableOpacity
-        style={[
-          commonStyles.tabButton,
-          activeTab === 'categories' && commonStyles.tabButtonActive,
-        ]}
-        onPress={() => onTabChange('categories')}
-      >
-        <Icon
-          name="list"
-          size={20}
-          color={activeTab === 'categories' ? colors.backgroundAlt : colors.text}
-        />
-        <Text
+      {tabs.map((tab) => (
+        <TouchableOpacity
+          key={tab.id}
           style={[
-            commonStyles.tabText,
-            activeTab === 'categories' && commonStyles.tabTextActive,
-            { fontSize: 12 }
+            commonStyles.tabButton,
+            activeTab === tab.id && commonStyles.tabButtonActive,
           ]}
+          onPress={() => onTabChange(tab.id as TabType)}
         >
-          Categories
-        </Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity
-        style={[
-          commonStyles.tabButton,
-          activeTab === 'rewards' && commonStyles.tabButtonActive,
-        ]}
-        onPress={() => onTabChange('rewards')}
-      >
-        <Icon
-          name="gift"
-          size={20}
-          color={activeTab === 'rewards' ? colors.backgroundAlt : colors.text}
-        />
-        <Text
-          style={[
-            commonStyles.tabText,
-            activeTab === 'rewards' && commonStyles.tabTextActive,
-            { fontSize: 12 }
-          ]}
-        >
-          Rewards
-        </Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={[
-          commonStyles.tabButton,
-          activeTab === 'history' && commonStyles.tabButtonActive,
-        ]}
-        onPress={() => onTabChange('history')}
-      >
-        <Icon
-          name="clock"
-          size={20}
-          color={activeTab === 'history' ? colors.backgroundAlt : colors.text}
-        />
-        <Text
-          style={[
-            commonStyles.tabText,
-            activeTab === 'history' && commonStyles.tabTextActive,
-            { fontSize: 12 }
-          ]}
-        >
-          History
-        </Text>
-      </TouchableOpacity>
+          <Icon
+            name={tab.icon}
+            size={20}
+            color={activeTab === tab.id ? colors.backgroundAlt : colors.text}
+          />
+          <Text
+            style={[
+              commonStyles.tabText,
+              activeTab === tab.id && commonStyles.tabTextActive,
+              { fontSize: 12 }
+            ]}
+          >
+            {tab.label}
+          </Text>
+        </TouchableOpacity>
+      ))}
     </View>
   );
 };

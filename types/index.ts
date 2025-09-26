@@ -26,27 +26,17 @@ export interface Reward {
   description?: string;
 }
 
-export interface TaskHistoryEntry {
+export interface HistoryEntry {
   id: string;
-  taskId: string;
-  taskName: string;
-  userId: string;
-  userName: string;
-  userColor: string;
-  points: number;
-  categoryName: string;
-  timestamp: Date;
-}
-
-export interface RewardHistoryEntry {
-  id: string;
-  rewardId: string;
-  rewardName: string;
+  type: 'task' | 'reward';
   userId: string;
   userName: string;
   userColor: string;
   points: number;
   timestamp: Date;
+  taskName?: string;
+  categoryName?: string;
+  rewardName?: string;
 }
 
 export interface AppState {
@@ -54,8 +44,7 @@ export interface AppState {
   categories: Category[];
   rewards: Reward[];
   totalPoints: number;
-  taskHistory: TaskHistoryEntry[];
-  rewardHistory: RewardHistoryEntry[];
+  history: HistoryEntry[];
 }
 
-export type TabType = 'categories' | 'rewards' | 'history';
+export type TabType = 'categories' | 'rewards' | 'history' | 'settings';

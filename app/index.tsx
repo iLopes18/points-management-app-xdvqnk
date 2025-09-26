@@ -10,6 +10,7 @@ import BottomTabs from '../components/BottomTabs';
 import CategoriesView from '../components/CategoriesView';
 import RewardsView from '../components/RewardsView';
 import HistoryView from '../components/HistoryView';
+import SettingsView from '../components/SettingsView';
 
 export default function MainScreen() {
   const [activeTab, setActiveTab] = useState<TabType>('categories');
@@ -22,6 +23,8 @@ export default function MainScreen() {
         return <RewardsView />;
       case 'history':
         return <HistoryView />;
+      case 'settings':
+        return <SettingsView />;
       default:
         return <CategoriesView />;
     }
